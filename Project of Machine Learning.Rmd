@@ -1,0 +1,94 @@
+---
+title: "Project of Machine Learning"
+output: html_document
+---
+
+```{r,warning=FALSE,message=FALSE}
+library(readr)
+library(caret)
+set.seed(100)
+```
+
+## Importing data
+
+In this section, the data for this case of study is importing from the Human Activity Recognition database of the webpage http://web.archive.org/web/20161224072740/http:/groupware.les.inf.puc-rio.br/har
+
+```{r,include=FALSE,echo=TRUE}
+BD_Train=read_csv("pml-training.csv")
+BD_Test=read_csv("pml-testing.csv")
+```
+
+In addition, it is important to delete the columns in which all values are missing and convert the classe attribute into a factor class.
+
+```{r}
+BD_Train=BD_Train[,colSums(is.na(BD_Train))==0]
+BD_Test=BD_Test[,colSums(is.na(BD_Test))==0]
+
+BD_Train$classe=factor(BD_Train$classe)
+```
+
+Finally, in this part, it is removed those columns which not provide relevant information such as user_name, raw_timestamp_part_1, raw_timestamp_part_,2 and  others.
+
+```{r}
+BD_Train=BD_Train[,-c(1:7)]
+BD_Test=BD_Test[,-c(1:7)]
+```
+
+## Dividing the data to create models for the analysis
+
+It will be used cross-validation through the division of the training data set into 2 groups: one for training (70%) and another for testing (30%). Once it is obtained the best model in which results are more accurate, the model will be applied to the testing data set.
+
+```{r}
+Index_BD_Train=createDataPartition(y=BD_Train$classe, p=0.70, list=FALSE)
+Train_BD_Train=BD_Train[Index_BD_Train,] 
+Test_BD_Train=BD_Train[-Index_BD_Train,]
+```
+
+## Developing prediction models
+
+### Model 1: Decision Tree
+
+For this model, it is necessary to use the 'rpart' package.
+
+```{r,warning=FALSE,message=FALSE}
+library(rpart)
+```
+
+First, the model is created using the rpart function.
+
+```{r,include=TRUE}
+Model1=rpart(classe ~ .,data=Train_BD_Train)
+Prediction1=predict(Model1,Test_BD_Train,type='class')
+```
+
+In order to compare the results obtain by the prediction model versus the real results, the confusionMatrix function is used.
+
+```{r,include=TRUE}
+confusionMatrix(Prediction1,factor(Test_BD_Train$classe))
+```
+
+### Model 2: Random Forest
+
+For this model, it is necessary to use the 'randomForest' package.
+
+```{r,warning=FALSE,message=FALSE}
+library(randomForest)
+```
+
+First, the model is created using the randomForest function.
+
+```{r,include=TRUE}
+Model2=randomForest(classe ~ .,data=Train_BD_Train)
+Prediction2=predict(Model2,Test_BD_Train)
+```
+
+In order to compare the results obtain by the prediction model versus the real results, the confusionMatrix function is used.
+
+```{r,include=TRUE}
+confusionMatrix(Prediction2,Test_BD_Train$classe)
+```
+
+## Final decision
+
+According to the results obtained through the confusionMatrix, it is observed that the accuracy of the Random Forest model (0.995) is better than the result obtained in the Decision Tree model (0.739). For that reason, the Random Forest model is chosen; in addition, the results show that the expected out-of-sample error is estimated at 0.005.
+
