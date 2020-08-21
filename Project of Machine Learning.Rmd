@@ -92,3 +92,12 @@ confusionMatrix(Prediction2,Test_BD_Train$classe)
 
 According to the results obtained through the confusionMatrix, it is observed that the accuracy of the Random Forest model (0.995) is better than the result obtained in the Decision Tree model (0.739). For that reason, the Random Forest model is chosen; in addition, the results show that the expected out-of-sample error is estimated at 0.005.
 
+## Evaluating test data set
+
+```{r,include=TRUE}
+Prediction3=predict(Model2,BD_Test)
+print(Prediction3)
+```
+
+
+

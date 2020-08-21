@@ -479,6 +479,14 @@ Prediction2=predict(Model2,Test_BD_Train)</code></pre>
 <h2>Final decision</h2>
 <p>According to the results obtained through the confusionMatrix, it is observed that the accuracy of the Random Forest model (0.995) is better than the result obtained in the Decision Tree model (0.739). For that reason, the Random Forest model is chosen; in addition, the results show that the expected out-of-sample error is estimated at 0.005.</p>
 </div>
+<div id="evaluating-test-data-set" class="section level2">
+<h2>Evaluating test data set</h2>
+<pre class="r"><code>Prediction3=predict(Model2,BD_Test)
+print(Prediction3)</code></pre>
+<pre><code>##  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 
+##  B  A  B  A  A  E  D  B  A  A  B  C  B  A  E  E  A  B  B  B 
+## Levels: A B C D E</code></pre>
+</div>
 
 
 
